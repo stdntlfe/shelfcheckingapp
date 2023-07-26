@@ -1,0 +1,6 @@
+opencv-python
+flask
+numpy
+torch
+pillow
+supervision

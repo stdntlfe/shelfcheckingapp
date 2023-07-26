@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shelf Checking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #eaf6ff; /* New background color */
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #upload-form {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-upload-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .custom-upload-button:hover {
+            background-color: #45a049;
+        }
+
+        #annotated-image-container {
+            margin-top: 20px;
+        }
+
+        /* Center the contents of the page */
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Styling for the output frame */
+        .output-frame {
+            max-width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .output-image {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <div class="container">
+            <h1>Shelf Checking App</h1>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+                <label for="image" class="custom-upload-button">Choose an Image</label>
+                <input type="file" name="image" id="image" accept="image/*" required>
+                <input type="submit" value="Output" class="custom-upload-button">
+            </form>
+
+            <div class="output-frame">
+                <div id="annotated-image-container">
+                    <img src="#" alt="Annotated Image" class="output-image" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/annotate_image', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const imageUrl = URL.createObjectURL(blob);
+                const annotatedImage = document.querySelector('.output-image');
+                annotatedImage.src = imageUrl;
+                annotatedImage.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
